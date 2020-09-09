@@ -77,6 +77,9 @@ function HomePage({ stateStore, coords }) {
 
     return (
         <div className="App-homepage-form">
+            
+            {/* TODO popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
+
             <h1>Please validate your location below</h1>
             <Formik
                 validationSchema={schema}
