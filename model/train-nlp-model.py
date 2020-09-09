@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pickle
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -15,6 +16,6 @@ train_vectors = cv.fit_transform(train_df["text"])
 clf = MultinomialNB()
 clf.fit(train_vectors, train_df["target"])
 
-# Test prediction
-inputs = ["nothing to see here", "massive flooding and thunderstorms taking place here"]
-print(clf.predict(cv.transform(inputs)))  # Do not use .fit_transform() here
+# Save vectorizer and model
+with open('model.pkl', 'wb') as f:
+    pickle.dump((cv, clf), f)
