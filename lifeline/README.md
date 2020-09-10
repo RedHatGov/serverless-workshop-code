@@ -25,6 +25,8 @@ Use the below command for a quick and dirty way to get it running in your cluste
 It's all in the devfile.yaml. If you have [odo installed](https://odo.dev/), just login to your cluster via CLI and run:
 > `odo push`
 
+And you push anytime you update code and want to send the changes to the cluster. Everything will very quickly update and the webapp automatically refreshes.
+
 ### Develop locally
 This is just the standard Node.js/React model - use npm and yarn. [Full details here](./README-reactapp.md)
 

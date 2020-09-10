@@ -13,8 +13,8 @@ import Tab from "react-bootstrap/Tab";
 import LocationDetailsView from "./LocationDetailsView";
 import MoreInfoView from "./MoreInfoView";
 // import MapView from "./MapView";
-import ChatView from "./ChatView";
-
+// import ChatView from "./ChatView";
+import QueryString from "query-string";
 import { geolocated } from "react-geolocated";
 import { getLocationByLatLon } from "../api/googlemaps";
 import { postMyLocation } from "../api/emergencyapi";
@@ -46,7 +46,7 @@ function HomePage({ stateStore, coords }) {
     //     if (data.results.length === 0) {
     //         console.log("Error: getLocationByLatLon got data = " + JSON.stringify(data));
 
-    //         // TODO set an warning state and visualize in the app
+    //         // TODO: error handling, set an warning state and visualize in the app
 
     //     } else {
     //         const address = (data.results[0].address_components.find(c => c.types.includes("locality")) || {} ).long_name;
@@ -57,16 +57,27 @@ function HomePage({ stateStore, coords }) {
 
     const shareMyLocation = async () => {
         const { latitude, longitude } = coords;
-        const { status } = await postMyLocation(latitude, longitude);
-        console.log("postMyLocation get status = " + JSON.stringify(status));
+        if (!stateStore.incidentId) {
+            console.log("no incident")
+            // TODO: error handling, alert user to an issue - not that they can do anything about it
+        } else {
+            try {
+                const { status } = await postMyLocation(stateStore.incidentId, latitude, longitude);
+                console.log("postMyLocation get status = " + JSON.stringify(status));
+            } catch (e) {
+                console.error('postMyLocation error!');
+                // TODO: error handling, Indicate error condition to UI
+            }
+        }
     };
 
     React.useEffect(() => {
-        console.log("homepage useEffect");
-        let search = window.location.search;
-        
-        console.log("query string is:"+ search);
-        // TODO parse query for id and set in stateStore - will use this for talking with erdemo.io API
+        const parsed = QueryString.parse(window.location.search);
+        // console.log(parsed);
+        if (parsed.incidentId) {
+            console.log("got incident id: "+ parsed.incidentId);
+            stateStore.setIncidentId(parsed.incidentId);
+        }
 
         if (!initialized) {
             stateStore.setAddress(localStorage.getItem("address") || "Unknown");
@@ -85,7 +96,7 @@ function HomePage({ stateStore, coords }) {
     return (
         <div className="App-homepage-form">
             
-            {/* TODO: popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
+            {/* TODO: error handling, popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
 
             <h1>Please validate your location below</h1>
             <Formik

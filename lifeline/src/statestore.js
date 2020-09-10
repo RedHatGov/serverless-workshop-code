@@ -17,6 +17,9 @@ class StateStore {
         this.llUpdatedAt = Moment.now
     }
     llUpdatedAt = Date.now;
+
+    incidentId = "";
+    setIncidentId(iid) { this.incidentId = iid;}
 }
 
 StateStore = decorate(StateStore, {
@@ -30,6 +33,9 @@ StateStore = decorate(StateStore, {
     setLon: action
 
     ,llUpdatedAt: observable
+
+    ,incidentId: observable,
+    setIncidentId: action
 });
 
 export { StateStore };

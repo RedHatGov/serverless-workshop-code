@@ -7,7 +7,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Moment from 'react-moment';
 import 'moment-timezone';
 
-function LocationDetails({ stateStore }) {
+function LocationDetailsView({ stateStore }) {
 
     const [mystatus, setMyStatus] = React.useState({});
     const sendMyLocation = async (lat,lon) => {
@@ -24,10 +24,10 @@ function LocationDetails({ stateStore }) {
         <div>
             <ListGroup>
                 <ListGroup.Item>Location (Lat/Lon): {stateStore.lat}, {stateStore.lon}</ListGroup.Item>
-                <ListGroup.Item>Location (Closest Address): {stateStore.address}</ListGroup.Item>
+                {/* <ListGroup.Item>Location (Closest Address): {stateStore.address}</ListGroup.Item> */}
                 <ListGroup.Item>Updated: <Moment calendar>{stateStore.llUpdatedAt}</Moment></ListGroup.Item>
             </ListGroup>
         </div>
     );
 }
-export default observer(LocationDetails);
+export default observer(LocationDetailsView);
