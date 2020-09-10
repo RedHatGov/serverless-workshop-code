@@ -3,11 +3,11 @@
 import React from "react";
 import { observer } from "mobx-react";
 
-function MoreInfo({ stateStore }) {    
+function MoreInfoView({ stateStore }) {    
     return (
         <div className="App-homepage-moreinfo">
             Please provide any additional information below
         </div>
     );
 }
-export default observer(MoreInfo);
+export default observer(MoreInfoView);

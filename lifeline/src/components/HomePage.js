@@ -10,8 +10,10 @@ import { observer } from "mobx-react";
 import * as yup from "yup"; // validate schemas
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import Location from "./LocationTab";
-import MoreInfo from "./MoreInfoTab";
+import LocationDetailsView from "./LocationDetailsView";
+import MoreInfoView from "./MoreInfoView";
+// import MapView from "./MapView";
+import ChatView from "./ChatView";
 
 import { geolocated } from "react-geolocated";
 import { getLocationByLatLon } from "../api/googlemaps";
@@ -60,7 +62,12 @@ function HomePage({ stateStore, coords }) {
     };
 
     React.useEffect(() => {
-        console.log("homepage use effect");
+        console.log("homepage useEffect");
+        let search = window.location.search;
+        
+        console.log("query string is:"+ search);
+        // TODO parse query for id and set in stateStore - will use this for talking with erdemo.io API
+
         if (!initialized) {
             stateStore.setAddress(localStorage.getItem("address") || "Unknown");
             setInitialized(true);
@@ -78,7 +85,7 @@ function HomePage({ stateStore, coords }) {
     return (
         <div className="App-homepage-form">
             
-            {/* TODO popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
+            {/* TODO: popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
 
             <h1>Please validate your location below</h1>
             <Formik
@@ -112,13 +119,23 @@ function HomePage({ stateStore, coords }) {
                 )}
             </Formik>
             <br />
-            <Tabs defaultActiveKey="location">
-                <Tab eventKey="location" title="Location">
-                    <Location stateStore={stateStore} />
+
+            {/* issue with these tabs + strict mode??
+                https://reactjs.org/docs/strict-mode.html#warning-about-deprecated-finddomnode-usage
+            */}
+            <Tabs defaultActiveKey="locationdetails">
+                <Tab eventKey="locationdetails" title="Location">
+                    <LocationDetailsView stateStore={stateStore} />
                 </Tab>
                 <Tab eventKey="moreinfo" title="More Info">
-                    <MoreInfo stateStore={stateStore} />
+                    <MoreInfoView stateStore={stateStore} />
                 </Tab>
+                {/* <Tab eventKey="chatview" title="Chat">
+                    <ChatView stateStore={stateStore} />
+                </Tab> */}
+                {/* <Tab eventKey="mapview" title="Map">
+                    <MapView stateStore={stateStore} />
+                </Tab> */}
             </Tabs>
         </div>
     );

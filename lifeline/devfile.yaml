@@ -1,0 +1,56 @@
+schemaVersion: 2.0.0
+metadata:
+  name: nodejs
+  version: 1.0.0
+starterProjects:
+- name: nodejs-starter
+  git:
+    remotes:
+      origin: https://github.com/odo-devfiles/nodejs-ex.git
+components:
+- name: runtime
+  container:
+    endpoints:
+    - exposure: public
+      path: /
+      secure: true
+      name: lifeline-3000
+      targetPort: 3000
+      protocol: http
+    image: registry.access.redhat.com/ubi8/nodejs-12:1-45
+    memoryLimit: 1024Mi
+    mountSources: true
+    sourceMapping: /project
+commands:
+- exec:
+    commandLine: npm install
+    component: runtime
+    group:
+      isDefault: true
+      kind: build
+    workingDir: /project
+  id: install
+- exec:
+    commandLine: npm start
+    component: runtime
+    group:
+      isDefault: true
+      kind: run
+    workingDir: /project
+  id: run
+- exec:
+    commandLine: npm run debug
+    component: runtime
+    group:
+      isDefault: true
+      kind: debug
+    workingDir: /project
+  id: debug
+- exec:
+    commandLine: npm test
+    component: runtime
+    group:
+      isDefault: true
+      kind: test
+    workingDir: /project
+  id: test

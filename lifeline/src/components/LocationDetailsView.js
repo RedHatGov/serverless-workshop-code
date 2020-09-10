@@ -7,7 +7,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Moment from 'react-moment';
 import 'moment-timezone';
 
-function Location({ stateStore }) {
+function LocationDetails({ stateStore }) {
 
     const [mystatus, setMyStatus] = React.useState({});
     const sendMyLocation = async (lat,lon) => {
@@ -30,4 +30,4 @@ function Location({ stateStore }) {
         </div>
     );
 }
-export default observer(Location);
+export default observer(LocationDetails);

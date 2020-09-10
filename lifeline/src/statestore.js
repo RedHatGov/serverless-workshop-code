@@ -5,10 +5,17 @@ import 'moment-timezone';
 class StateStore {
     address = "Unknown";
     setAddress(address) { this.address = address;}
+    
     lat = "";
-    setLat(lat) { this.lat = lat; this.llUpdatedAt = Moment.now}
+    setLat(lat) {
+        this.lat = lat;
+        this.llUpdatedAt = Moment.now
+    }
     lon = "";
-    setLon(lon) {this.lon = lon; this.llUpdatedAt = Moment.now}
+    setLon(lon) {
+        this.lon = lon;
+        this.llUpdatedAt = Moment.now
+    }
     llUpdatedAt = Date.now;
 }
 

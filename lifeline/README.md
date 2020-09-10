@@ -12,18 +12,18 @@ It's a React based webapp that's meant to be deployed as a PWA (progressive web 
 ## How to run it?
 You can run it just like you typically run a react app - webpack it and get it to the user's web browser. But if you want to run it on OpenShift (like we do), the instructions are below.
 
-Use this for a quick and dirty way to get it running for development in your cluster:
-```oc new-app nodeshift/ubi8-s2i-web-app:latest~https://github.com/RedHatGov/serverless-workshop-code.git#main --name=lifeline --context-dir=lifeline```
+Use the below command for a quick and dirty way to get it running in your cluster:
+```oc new-app nodeshift/ubi8-s2i-web-app:latest~https://github.com/RedHatGov/serverless-workshop-code.git --name=lifeline --context-dir=lifeline```
 
-Production/serverless running instructions: TBD
 
 ### Running notes
 * for geo-location to work you have to serve the app via https
-
+* for geo-location to work on mobile, settings must not be actively denying GPS access
 
 ## Dev/Test/Debug
 ### Develop with on OpenShift using odo
-TBD
+It's all in the devfile.yaml. If you have [odo installed](https://odo.dev/), just login to your cluster via CLI and run:
+> `odo push`
 
 ### Develop locally
 This is just the standard Node.js/React model - use npm and yarn. [Full details here](./README-reactapp.md)
