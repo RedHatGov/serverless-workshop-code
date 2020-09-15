@@ -4,7 +4,7 @@ import pickle, boto3
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
 
-# Retrieve the training data from https://www.kaggle.com/vbmokin/nlp-with-disaster-tweets-cleaning-data
+# Data set: https://www.kaggle.com/vbmokin/nlp-with-disaster-tweets-cleaning-data
 # Read training data set
 train_df = pd.read_csv("train.csv")
 
