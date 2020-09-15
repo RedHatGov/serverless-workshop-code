@@ -12,6 +12,10 @@ python train.py
 To run this in OpenShift:
 ```
 oc new-app python:2.7~https://github.com/RedHatGov/serverless-workshop-code --name prediction --context-dir=model/prediction
+oc create configmap config --from-file=$HOME/.aws/config
+oc create secret generic credentials --from-file=$HOME/.aws/credentials
+oc set volume dc prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
+oc set volume dc prediction --add --name=credentials --mount-path /opt/app-root/src/.aws/credentials --sub-path=credentials --source='{"secret":{"secretName":"credentials"}}'
 ```
 
 To run this locally:
@@ -25,8 +29,9 @@ flask run
 To test in OpenShift:
 ```
 oc expose svc prediction
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $(oc get route prediction --template='{{.spec.host}}/predict')
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $(oc get route prediction --template='{{.spec.host}}/predict')
+ROUTE_URL=$(oc get route prediction --template='{{.spec.host}}/predict')
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $ROUTE_URL
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $ROUTE_URL
 ```
 
 To test locally:
