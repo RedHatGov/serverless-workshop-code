@@ -3,9 +3,9 @@ from flask import Flask, request, abort
 
 bucket_name = 'serverless-workshop-model'
 model_file_name = 'model.pkl'
-app = Flask(__name__)
+application = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
+@application.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
 

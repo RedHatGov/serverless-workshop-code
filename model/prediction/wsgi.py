@@ -1,4 +1,4 @@
-from prediction import app
+from prediction import application
 
 if __name__ == "__main__":
-    app.run(port=8080)
+    application.run(port=8080)
