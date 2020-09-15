@@ -2,15 +2,14 @@
 
 1. Download the dataset
 
-2. Train the model
+2. Train the model.  Model is uploaded to S3 bucket.  You can change the bucket name in the code.
 ```
 python train-nlp-model.py
 ```
 
-3. Model will be saved to disk as `model.pkl`
-
-4. Run the prediction service using flask
+3. Run the prediction service using flask.  You can change the bucket name in the code.
 ```
+export FLASK_APP=run-nlp-model.py
 flask run
 ```
 

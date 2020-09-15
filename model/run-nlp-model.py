@@ -1,6 +1,8 @@
-import pickle
+import pickle, boto3
 from flask import Flask, request, abort
 
+bucket_name = 'serverless-workshop-model'
+model_file_name = 'model.pkl'
 app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
@@ -12,13 +14,12 @@ def predict():
             abort(400)
         text = request.json['text']
 
-        # Load the vectorizer and model
-        with open('model.pkl', 'rb') as f:
+        # Load the vectorizer and model from S3
+        s3 = boto3.resource('s3')
+        s3.Bucket(bucket_name).download_file(model_file_name, model_file_name)
+        with open(model_file_name, 'rb') as f:
             cv, clf = pickle.load(f)
 
         # Return prediction
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
-        if prediction == 1:
-            return "This is a disaster"
-        else:
-            return "This is not a disaster"
+        return 'Disaster' if prediction == 1 else 'No disaster'
