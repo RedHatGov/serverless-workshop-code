@@ -1,41 +1,61 @@
 # NLP model
 
-1. Download the dataset from https://www.kaggle.com/vbmokin/nlp-with-disaster-tweets-cleaning-data
+## Setup
 
-2. Train the model.  Model is uploaded to S3 bucket.  You can change the bucket name in the code.
+Fork this repo.
+
+Download the dataset from https://www.kaggle.com/vbmokin/nlp-with-disaster-tweets-cleaning-data.  Save the dataset as `train.csv` in the `training` folder.
+
+Use the aws CLI and run `aws configure` to create config and credential files in your home directory.
+
+Replace the bucket name in the `train.py` and `prediction.py` files with your S3 bucket.
+
+## Train the model
+
+Run the training script.  The model is uploaded to your S3 bucket.
 ```
 python train.py
 ```
 
-3. Run the prediction service using flask.  You can change the bucket name in the code.
+## Option A: Run model prediction using OpenShift Serverless
 
-To run this in OpenShift:
+TODO
+
+## Option B: Run model prediction using s2i
+
+Run the prediction service using s2i.
+
 ```
-oc new-app python:2.7~https://github.com/RedHatGov/serverless-workshop-code --name prediction --context-dir=model/prediction
+GITHUB_URL=<fork-repo-url>
+oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
 oc set volume dc prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
 oc set volume dc prediction --add --name=credentials --mount-path /opt/app-root/src/.aws/credentials --sub-path=credentials --source='{"secret":{"secretName":"credentials"}}'
 ```
 
-To run this locally:
+Send sample requests.
+
+```
+oc expose svc prediction
+PREDICTION_URL=$(oc get route prediction --template='{{.spec.host}}/predict')
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $PREDICTION_URL
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $PREDICTION_URL
+```
+
+## Option C: Run model prediction locally
+
+Run the prediction service using flask.
+
 ```
 export FLASK_APP=prediction.py
 flask run
 ```
 
-5. Sample requests
+Send sample requests.
 
-To test in OpenShift:
 ```
-oc expose svc prediction
-ROUTE_URL=$(oc get route prediction --template='{{.spec.host}}/predict')
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $ROUTE_URL
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $ROUTE_URL
-```
-
-To test locally:
-```
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' http://localhost:5000/predict
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' http://localhost:5000/predict
+PREDICTION_URL='http://localhost:5000/predict'
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' PREDICTION_URL
+curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' PREDICTION_URL
 ```
