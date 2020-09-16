@@ -1,0 +1,25 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: prediction
+spec:
+  template:
+    spec:
+      containers:
+      - image: %PREDICTION_IMAGE_URI%
+        volumeMounts:
+        - mountPath: /opt/app-root/src/.aws/config
+          name: config
+          subPath: config
+        - mountPath: /opt/app-root/src/.aws/credentials
+          name: credentials
+          subPath: credentials
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config
+      - name: credentials
+        secret:
+          defaultMode: 420
+          secretName: credentials

@@ -1,5 +1,5 @@
 import pickle, boto3
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 
 bucket_name = 'serverless-workshop-model'
 model_file_name = 'model.pkl'
@@ -22,4 +22,4 @@ def predict():
 
         # Return prediction
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
-        return 'Disaster' if prediction == 1 else 'No disaster'
+        return jsonify({"disaster": True if prediction == 1 else False})
