@@ -26,6 +26,8 @@ Install [OpenShift Serverless](https://docs.openshift.com/container-platform/4.5
 
 Install [Knative Serving](https://docs.openshift.com/container-platform/4.5/serverless/installing_serverless/installing-knative-serving.html#installing-knative-serving)
 
+Install [Kn](https://github.com/knative/client/blob/master/docs/README.md)
+
 Start the build
 
 ```bash
@@ -33,8 +35,15 @@ GITHUB_URL=https://github.com/RedHatGov/serverless-workshop-code    # replace wi
 oc new-build python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction
 ```
 
-Deploy to serverless
+Deploy to serverless using `kn`
 
+```bash
+oc create secret generic aws --from-file=$HOME/.aws
+PREDICTION_IMAGE_URI=$(oc get is prediction --template='{{.status.dockerImageRepository}}')
+kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root/src/.aws=aws --volume aws=sc:aws
+```
+
+Alternatively, deploy to serverless using YAML:
 ```bash
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
