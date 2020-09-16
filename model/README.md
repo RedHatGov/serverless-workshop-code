@@ -59,6 +59,13 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see
 curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $PREDICTION_URL
 ```
 
+Scale test using `hey`
+
+```bash
+PREDICTION_URL=$(oc get route.serving.knative.dev prediction --template='{{.status.url}}/predict')
+hey -c 100 -z 30s -m POST -H "Content-Type: application/json" -d '{"text": "nothing to see here"}' $PREDICTION_URL
+```
+
 ## Option B: Run model prediction using s2i
 
 Run the prediction service using s2i
