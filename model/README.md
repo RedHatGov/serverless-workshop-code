@@ -25,7 +25,7 @@ pip install -r requirements.txt
 python train.py
 ```
 
-> Note: if you don't have an existing s3 bucket you can create one with `aws s3 mb s3://$BUCKET_NAME
+> Note: if you don't have an existing s3 bucket you can create one with `aws s3 mb s3://$BUCKET_NAME`
 
 
 ## Option A: Run model prediction using OpenShift Serverless
