@@ -8,9 +8,14 @@ Download the dataset from https://www.kaggle.com/vbmokin/nlp-with-disaster-tweet
 
 Use the aws CLI and run `aws configure` to create config and credential files in your home directory.
 
-Replace the bucket name in the `train.py` and `prediction.py` files with your S3 bucket.
-
 ## Train the model
+
+Set environment variables.
+
+```bash
+export BUCKET_NAME=serverless-workshop-model    # replace with your S3 bucket
+export MODEL_FILE_NAME=model.pkl
+```
 
 Run the training script.  The model is uploaded to your S3 bucket.
 
@@ -72,7 +77,7 @@ Run the prediction service using s2i
 
 ```bash
 GITHUB_URL=https://github.com/RedHatGov/serverless-workshop-code    # replace with your forked repo's url
-oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction
+oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # rpelace with your S3 bucket
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
 oc set volume dc prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
@@ -96,6 +101,8 @@ Run the prediction service using flask
 cd model/prediction
 pip install -r requirements.txt
 export FLASK_APP=prediction.py
+export BUCKET_NAME=serverless-workshop-model    # replace with your S3 bucket
+export MODEL_FILE_NAME=model.pkl
 flask run
 ```
 

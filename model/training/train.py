@@ -1,8 +1,12 @@
 import numpy as np
 import pandas as pd
-import pickle, boto3
+import pickle, boto3, os
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
+
+# Set variables
+bucket_name=os.getenv("BUCKET_NAME")
+model_file_name=os.getenv("MODEL_FILE_NAME")
 
 # Data set: https://www.kaggle.com/vbmokin/nlp-with-disaster-tweets-cleaning-data
 # Read training data set
@@ -18,7 +22,5 @@ clf.fit(train_vectors, train_df["target"])
 
 # Save vectorizer and model
 # Upload vectorizer and model to S3
-bucket_name='serverless-workshop-model'
-model_file_name='model.pkl'
 s3 = boto3.resource('s3')
 s3.Bucket(bucket_name).put_object(Key=model_file_name, Body = pickle.dumps((cv,clf)))
