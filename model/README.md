@@ -45,7 +45,7 @@ Deploy to serverless using `kn`
 ```bash
 oc create secret generic aws --from-file=$HOME/.aws
 PREDICTION_IMAGE_URI=$(oc get is prediction --template='{{.status.dockerImageRepository}}')
-kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root/src/.aws=aws --volume aws=sc:aws
+kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root/src/.aws=aws --volume aws=sc:aws --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
 ```
 
 Alternatively, deploy to serverless using YAML:
@@ -77,11 +77,11 @@ Run the prediction service using s2i
 
 ```bash
 GITHUB_URL=https://github.com/RedHatGov/serverless-workshop-code    # replace with your forked repo's url
-oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # rpelace with your S3 bucket
+oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
-oc set volume dc prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
-oc set volume dc prediction --add --name=credentials --mount-path /opt/app-root/src/.aws/credentials --sub-path=credentials --source='{"secret":{"secretName":"credentials"}}'
+oc set volume deploy prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
+oc set volume deploy prediction --add --name=credentials --mount-path /opt/app-root/src/.aws/credentials --sub-path=credentials --source='{"secret":{"secretName":"credentials"}}'
 ```
 
 Send sample requests
