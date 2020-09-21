@@ -48,17 +48,13 @@ PREDICTION_IMAGE_URI=$(oc get is prediction --template='{{.status.dockerImageRep
 kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root/src/.aws=aws --volume aws=sc:aws --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
 ```
 
-Alternatively, deploy to serverless using YAML.
-
-Edit the `prediction-service.yaml` with your S3 bucket.
-
-Then deploy
+Alternatively, deploy to serverless using YAML.  Edit the `model/prediction/prediction-service.yaml` with your S3 bucket.  Then deploy
 
 ```bash
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
 PREDICTION_IMAGE_URI=$(oc get is prediction --template='{{.status.dockerImageRepository}}')
-sed "s|%PREDICTION_IMAGE_URI%|$PREDICTION_IMAGE_URI|" ./prediction-service.yaml | oc create -f -
+sed "s|%PREDICTION_IMAGE_URI%|$PREDICTION_IMAGE_URI|" ./model/prediction/prediction-service.yaml | oc create -f -
 ```
 
 Send sample requests
