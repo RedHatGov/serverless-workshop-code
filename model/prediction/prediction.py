@@ -17,13 +17,10 @@ with open(model_file_name, 'rb') as f:
 
 @application.route('/predict', methods=['POST'])
 def predict():
-    """Returns a disaster prediction by running the request text through NLP model"""
+    """Returns a disaster prediction by running the incoming text message through NLP model"""
     if request.method == 'POST':
 
-        if not request.json or not 'text' in request.json:
-            abort(400)
-        text = request.json['text']
-
+        text = request.values.get('Body', None)
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
         
         # Construct TwiML response
