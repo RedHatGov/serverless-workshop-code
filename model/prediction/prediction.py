@@ -21,6 +21,9 @@ def predict():
     if request.method == 'POST':
 
         text = request.values.get('Body', None)
+        if text is None:
+            abort(400)
+
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
         
         # Construct TwiML response

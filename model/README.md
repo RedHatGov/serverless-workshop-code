@@ -27,8 +27,9 @@ python train.py
 
 > Note: if you don't have an existing s3 bucket you can create one with `aws s3 mb s3://$BUCKET_NAME`
 
+## Run prediction service
 
-## Option A: Run model prediction using OpenShift Serverless
+### Option A: Run model prediction using OpenShift Serverless
 
 Install [OpenShift Serverless](https://docs.openshift.com/container-platform/4.5/serverless/installing_serverless/installing-openshift-serverless.html)
 
@@ -64,8 +65,8 @@ Send sample requests
 
 ```bash
 PREDICTION_URL=$(oc get route.serving.knative.dev prediction --template='{{.status.url}}/predict')
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $PREDICTION_URL
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $PREDICTION_URL
+curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
 ```
 
 Scale test using `hey`
@@ -75,7 +76,7 @@ PREDICTION_URL=$(oc get route.serving.knative.dev prediction --template='{{.stat
 hey -c 100 -z 30s -m POST -H "Content-Type: application/json" -d '{"text": "nothing to see here"}' $PREDICTION_URL
 ```
 
-## Option B: Run model prediction using s2i
+### Option B: Run model prediction using s2i
 
 Run the prediction service using s2i
 
@@ -93,11 +94,11 @@ Send sample requests
 ```bash
 oc expose svc prediction
 PREDICTION_URL=$(oc get route prediction --template='{{.spec.host}}/predict')
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $PREDICTION_URL
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $PREDICTION_URL
+curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
 ```
 
-## Option C: Run model prediction locally
+### Option C: Run model prediction locally
 
 Run the prediction service using flask
 
@@ -114,6 +115,16 @@ Send sample requests
 
 ```bash
 PREDICTION_URL='http://localhost:5000/predict'
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "nothing to see here"}' $PREDICTION_URL
-curl -i -H "Content-Type: application/json" -X POST -d '{"text": "massive flooding and thunderstorms taking place"}' $PREDICTION_URL
+curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
 ```
+
+## Integrate with Twilio
+
+Get a [free trial account](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account) on Twilio.  You don't need a credit card to sign up.
+
+Get a [Twilio phone number](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account#get-your-first-twilio-phone-number).
+
+Configure your [TwiML Webhook URL](https://www.twilio.com/docs/sms/tutorials/how-to-receive-and-reply-python#configure-your-webhook-url) for your Twilio phone number.  Use the public URL endpoint of the prediction service created in either Option A or Option B.
+
+Send a text to your Twilio phone number, and you should get a reply from the NLP prediction service!
