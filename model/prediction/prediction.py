@@ -1,6 +1,7 @@
 import pickle, boto3, os
 from flask import Flask, request, abort, jsonify
 from boto3.s3.transfer import TransferConfig
+from twilio.twiml.messaging_response import MessagingResponse
 
 application = Flask(__name__)
 
@@ -16,12 +17,16 @@ with open(model_file_name, 'rb') as f:
 
 @application.route('/predict', methods=['POST'])
 def predict():
-    """Returns a disaster prediction by running the request text through NLP model"""
+    """Returns a disaster prediction by running the incoming text message through NLP model"""
     if request.method == 'POST':
 
-        if not request.json or not 'text' in request.json:
+        text = request.values.get('Body', None)
+        if text is None:
             abort(400)
-        text = request.json['text']
 
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
-        return jsonify({"disaster": True if prediction == 1 else False})
+        
+        # Construct TwiML response
+        resp = MessagingResponse()
+        resp.message("This is a disaster!" if prediction == 1 else "No disaster")
+        return str(resp)
