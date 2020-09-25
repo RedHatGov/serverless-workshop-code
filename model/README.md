@@ -121,7 +121,7 @@ curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDI
 
 ## Integrate with Twilio
 
-Get a [free trial account](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account) on Twilio.  You don't need a credit card to sign up.
+Get a [free trial account](https://www.twilio.com/referral/SoYU8B) on Twilio.  You don't need a credit card to sign up.
 
 Get a [Twilio phone number](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account#get-your-first-twilio-phone-number).
 
