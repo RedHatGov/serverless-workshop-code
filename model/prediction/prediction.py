@@ -15,6 +15,9 @@ s3.Bucket(bucket_name).download_file(model_file_name, model_file_name, Config=Tr
 with open(model_file_name, 'rb') as f:
     cv, clf = pickle.load(f)
 
+# Set lifeline route
+lifeline_url = os.getenv("LIFELINE_URL")
+
 @application.route('/predict', methods=['POST'])
 def predict():
     """Returns a disaster prediction by running the incoming text message through NLP model"""
@@ -28,5 +31,9 @@ def predict():
         
         # Construct TwiML response
         resp = MessagingResponse()
-        resp.message("This is a disaster!" if prediction == 1 else "No disaster")
+
+        if lifeline_url:
+            resp.message("Please click on this link: " + lifeline_url if prediction == 1 else "Please send more information")
+        else:
+            resp.message("This is a disaster!" if prediction == 1 else "No disaster")
         return str(resp)

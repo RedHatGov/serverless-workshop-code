@@ -119,6 +119,30 @@ curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
 curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
 ```
 
+## Integrate with Lifeline
+
+Read the [lifeline instructions](../lifeline/README.md) for deploying to OpenShift.
+
+Create an external route to lifeline
+
+```bash
+oc expose svc lifeline
+```
+
+Grab the URL
+
+```bash
+LIFELINE_URL=$(oc get route lifeline --template='http://{{.spec.host}}')
+```
+
+Deploy to serverless using `kn`
+
+```bash
+oc create secret generic aws --from-file=$HOME/.aws
+PREDICTION_IMAGE_URI=$(oc get is prediction --template='{{.status.dockerImageRepository}}')
+kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root/src/.aws=aws --volume aws=sc:aws --env LIFELINE_URL=$LIFELINE_URL --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
+```
+
 ## Integrate with Twilio
 
 Get a [free trial account](https://www.twilio.com/referral/SoYU8B) on Twilio.  You don't need a credit card to sign up.
