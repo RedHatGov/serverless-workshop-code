@@ -123,16 +123,16 @@ curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDI
 
 Read the [lifeline instructions](../lifeline/README.md) for deploying to OpenShift.
 
-Create an external route to lifeline
+Create an external route to lifeline.  Note: TLS is required for geo-location, so use edge termination:
 
 ```bash
-oc expose svc lifeline
+oc create route edge --service=lifeline
 ```
 
 Grab the URL
 
 ```bash
-LIFELINE_URL=$(oc get route lifeline --template='http://{{.spec.host}}')
+LIFELINE_URL=$(oc get route lifeline --template='https://{{.spec.host}}')
 ```
 
 Deploy to serverless using `kn`
@@ -148,6 +148,8 @@ kn service create prediction --image $PREDICTION_IMAGE_URI --mount /opt/app-root
 Get a [free trial account](https://www.twilio.com/referral/SoYU8B) on Twilio.  You don't need a credit card to sign up.
 
 Get a [Twilio phone number](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account#get-your-first-twilio-phone-number).
+
+Add your mobile phone as a [Verified phone number](https://support.twilio.com/hc/en-us/articles/223180048-Adding-a-Verified-Phone-Number-or-Caller-ID-with-Twilio) to your Twilio free account.
 
 Configure your [TwiML Webhook URL](https://www.twilio.com/docs/sms/tutorials/how-to-receive-and-reply-python#configure-your-webhook-url) for your Twilio phone number.  Use the public URL endpoint of the prediction service created in either Option A or Option B.
 
