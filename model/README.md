@@ -1,5 +1,7 @@
 # NLP model
 
+Note: This branch has buggy code for the purposes of the workshop.
+
 ## Setup
 
 Fork this repo.
