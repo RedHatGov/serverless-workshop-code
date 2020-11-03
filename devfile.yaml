@@ -2,3 +2,16 @@
 apiVersion: 1.0.0
 metadata:
   generateName: serverless-workshop-ml
+components:
+ -
+  type: chePlugin
+  id: ms-python/python/latest
+  preferences:
+   python.globalModuleInstallation: true
+  memoryLimit: 512Mi
+ -
+  type: dockerimage
+  alias: python
+  image: quay.io/eclipse/che-python-3.8:nightly
+  memoryLimit: 512Mi
+  mountSources: true
