@@ -43,7 +43,7 @@ Start the build
 
 ```bash
 GITHUB_URL=https://github.com/RedHatGov/serverless-workshop-code    # replace with your forked repo's url
-oc new-build python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction
+oc new-build python:3.8~$GITHUB_URL --name prediction --context-dir=model/prediction
 ```
 
 Deploy to serverless using `kn`
@@ -84,7 +84,7 @@ Run the prediction service using s2i
 
 ```bash
 GITHUB_URL=https://github.com/RedHatGov/serverless-workshop-code    # replace with your forked repo's url
-oc new-app python:2.7~$GITHUB_URL --name prediction --context-dir=model/prediction --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
+oc new-app python:3.8~$GITHUB_URL --name prediction --context-dir=model/prediction --env BUCKET_NAME=serverless-workshop-model --env MODEL_FILE_NAME=model.pkl  # replace with your S3 bucket
 oc create configmap config --from-file=$HOME/.aws/config
 oc create secret generic credentials --from-file=$HOME/.aws/credentials
 oc set volume deploy prediction --add --name=config --mount-path /opt/app-root/src/.aws/config --sub-path=config --source='{"configMap":{"name":"config"}}'
