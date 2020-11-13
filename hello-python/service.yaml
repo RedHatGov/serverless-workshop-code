@@ -1,0 +1,13 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hello-python
+  namespace: hello
+spec:
+  template:
+    spec:
+      containers:
+        - image: quay.io/jkeam/hello-python
+          env:
+            - name: TARGET
+              value: "Python"
