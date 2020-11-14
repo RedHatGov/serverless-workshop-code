@@ -8,7 +8,6 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 
 function LocationDetailsView({ stateStore }) {
-
     const [mystatus, setMyStatus] = React.useState({});
     const sendMyLocation = async (lat,lon) => {
         const response = await postMyLocation(lat,lon);
@@ -16,9 +15,9 @@ function LocationDetailsView({ stateStore }) {
     };
 
     React.useEffect(() => {
-        // TODO: on change this triggers, tell the erdemo backend and get status
-        //stateStore.lat && stateStore.lon && sendMyLocation(stateStore.lat, stateStore.long);
-    }, [stateStore.lat, stateStore.lon, stateStore.timestamp, stateStore.address]);
+        // TODO: tell the erdemo backend and get status
+        //sendMyLocation(stateStore.lat, stateStore.lon);
+    }, [stateStore.lat, stateStore.lon, stateStore.llUpdatedAt, stateStore.address]);
 
     return (
         <div>

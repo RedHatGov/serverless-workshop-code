@@ -2,6 +2,10 @@
 // license: Apache 2.0
 // inspired by work here: https://medium.com/swlh/how-to-add-geolocation-to-a-react-app-af2d55a8b5e3
 import React from "react";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import { Container } from '@material-ui/core';
 import { Formik } from "formik"; // forms helper
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
@@ -16,8 +20,8 @@ import MoreInfoView from "./MoreInfoView";
 // import ChatView from "./ChatView";
 import QueryString from "query-string";
 import { geolocated } from "react-geolocated";
-import { getLocationByLatLon } from "../api/googlemaps";
 import { postMyLocation } from "../api/emergencyapi";
+import MapView from "./MapView";
 
 const schema = yup.object({address: yup.string().required("Address is required")});
 const buttonStyle = { marginRight: "10px" };
@@ -78,7 +82,6 @@ function HomePage({ stateStore, coords }) {
             console.log("got incident id: "+ parsed.incidentId);
             stateStore.setIncidentId(parsed.incidentId);
         }
-
         if (!initialized) {
             stateStore.setAddress(localStorage.getItem("address") || "Unknown");
             setInitialized(true);
@@ -87,18 +90,16 @@ function HomePage({ stateStore, coords }) {
             const { latitude, longitude } = coords;
             stateStore.setLat(latitude);
             stateStore.setLon(longitude);
-
-            // TODO try to lookup address from lat/lon
-
+            console.log("HomePage setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon)
         }
     }, [initialized, coords, stateStore]);
 
     return (
         <div className="App-homepage-form">
-            
+
             {/* TODO: error handling, popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
 
-            <h1>Please validate your location below</h1>
+            <h1>How can we help?</h1>
             <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -109,7 +110,9 @@ function HomePage({ stateStore, coords }) {
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} md="12" controlId="address">
-                                <Form.Label>Then tap the share button - it'll help us get there quicker</Form.Label>
+                                <Form.Label>Verify the map is on your location, and provide form details</Form.Label>
+                                <br/>
+                                <Form.Label>Then tap the share button</Form.Label>
                                 {/* <Form.Control
                                     type="text"
                                     name="address"
@@ -123,8 +126,31 @@ function HomePage({ stateStore, coords }) {
                                 <Form.Control.Feedback type="invalid">{errors.address}</Form.Control.Feedback> */}
                             </Form.Group>
                         </Form.Row>
+                        <CssBaseline />
+                        <Container maxWidth="sm">
+                            <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '50vh' }}>
+                                <MapView stateStore={stateStore} />
+                            </Typography>
+                            <br></br>
+                        </Container>
+
+                        <Tabs defaultActiveKey="locationdetails">
+                            <Tab eventKey="locationdetails" title="Location">
+                                <LocationDetailsView stateStore={stateStore} />
+                                
+                            </Tab>
+                            {/* <Tab eventKey="chatview" title="Chat">
+                                <ChatView stateStore={stateStore} />
+                            </Tab> */}
+                        </Tabs>
+                        <br></br>
+                        <Tabs defaultActiveKey="moredetails">
+                            <Tab eventKey="moredetails" title="Provide Additional Info">
+                                <MoreInfoView stateStore={stateStore} />
+                            </Tab>
+                        </Tabs>
                         <Button type="button" onClick={shareMyLocation} style={buttonStyle} disabled={!coords}>    
-                            Share My Current Location
+                            Share My Info & Get Help
                         </Button>
                     </Form>
                 )}
@@ -134,20 +160,6 @@ function HomePage({ stateStore, coords }) {
             {/* issue with these tabs + strict mode??
                 https://reactjs.org/docs/strict-mode.html#warning-about-deprecated-finddomnode-usage
             */}
-            <Tabs defaultActiveKey="locationdetails">
-                <Tab eventKey="locationdetails" title="Location">
-                    <LocationDetailsView stateStore={stateStore} />
-                </Tab>
-                <Tab eventKey="moreinfo" title="More Info">
-                    <MoreInfoView stateStore={stateStore} />
-                </Tab>
-                {/* <Tab eventKey="chatview" title="Chat">
-                    <ChatView stateStore={stateStore} />
-                </Tab> */}
-                {/* <Tab eventKey="mapview" title="Map">
-                    <MapView stateStore={stateStore} />
-                </Tab> */}
-            </Tabs>
         </div>
     );
 }

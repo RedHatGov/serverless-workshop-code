@@ -29,7 +29,6 @@ function MoreInfoView({ stateStore }) {
 
     return (
         <div className="App-homepage-moreinfo">
-            Please provide any additional information below
             <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -70,9 +69,6 @@ function MoreInfoView({ stateStore }) {
                                 <Form.Control.Feedback type="invalid">{errors.anythingelse}</Form.Control.Feedback>
                             </Form.Group>
                         </Form.Row>
-                        <Button type="submit" style={buttonStyle}>
-                            Share More Info
-                        </Button>
                     </Form>
                 )}
             </Formik>
