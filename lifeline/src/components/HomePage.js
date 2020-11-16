@@ -146,6 +146,7 @@ function HomePage({ stateStore, coords }) {
                         <br></br>
                         <Tabs defaultActiveKey="moredetails">
                             <Tab eventKey="moredetails" title="Provide Additional Info">
+                                {/* TODO: this view has forms too - they can't be nested need to fix */}
                                 <MoreInfoView stateStore={stateStore} />
                             </Tab>
                         </Tabs>

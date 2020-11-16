@@ -19,6 +19,7 @@ Use the below command for a quick and dirty way to get it running in your cluste
 ### Running notes
 * for geo-location to work you have to serve the app via https
 * for geo-location to work on mobile, settings must not be actively denying GPS access
+* to set/change env vars for your common/dev/prod setups use the `.env` files
 
 ## Dev/Test/Debug
 ### Develop with on OpenShift using odo
