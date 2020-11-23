@@ -115,8 +115,9 @@ Send sample requests
 
 ```bash
 PREDICTION_URL='http://localhost:5000/predict'
-curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
-curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
+FROM_PHONE_NUMBER='%2B5557543010'   # example phone number with twilio formatting
+curl -i -X POST -d 'Body=nothing to see here&From='$FROM_PHONE_NUMBER $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place&From='$FROM_PHONE_NUMBER $PREDICTION_URL
 ```
 
 ## Integrate with Lifeline

@@ -30,13 +30,21 @@ def predict():
         if text is None:
             abort(400)
 
+        caller = request.values.get('From', None)
+        if caller is None:
+            abort(400)
+
+        caller = caller.lstrip('+')
+        if not caller.isdigit():
+            abort(400)
+
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
         
         # Construct TwiML response
         resp = MessagingResponse()
-
+        
         if lifeline_url:
-            resp.message("Please click on this link: " + lifeline_url if prediction == 1 else "Please send more information")
+            resp.message("Please click on this link: {}/{}".format(lifeline_url,caller) if prediction == 1 else "Please send more information")
         else:
             resp.message("This is a disaster!" if prediction == 1 else "No disaster")
         return str(resp)
