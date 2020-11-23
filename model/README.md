@@ -65,15 +65,17 @@ Send sample requests
 
 ```bash
 PREDICTION_URL=$(oc get route.serving.knative.dev prediction --template='{{.status.url}}/predict')
-curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
-curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
+FROM_PHONE_NUMBER='%2B5557543010'   # example phone number with twilio formatting
+curl -i -X POST -d 'Body=nothing to see here&From='$FROM_PHONE_NUMBER $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place&From='$FROM_PHONE_NUMBER $PREDICTION_URL
 ```
 
 Scale test using `hey`
 
 ```bash
 PREDICTION_URL=$(oc get route.serving.knative.dev prediction --template='{{.status.url}}/predict')
-hey -c 100 -z 30s -m POST -H "Content-Type: application/json" -d '{"text": "nothing to see here"}' $PREDICTION_URL
+FROM_PHONE_NUMBER='%2B5557543010'   # example phone number with twilio formatting
+hey -c 100 -z 30s -m POST -d 'Body=nothing to see here&From='$FROM_PHONE_NUMBER $PREDICTION_URL
 ```
 
 ### Option B: Run model prediction using s2i
@@ -94,8 +96,9 @@ Send sample requests
 ```bash
 oc expose svc prediction
 PREDICTION_URL=$(oc get route prediction --template='{{.spec.host}}/predict')
-curl -i -X POST -d 'Body=nothing to see here' $PREDICTION_URL
-curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place' $PREDICTION_URL
+FROM_PHONE_NUMBER='%2B5557543010'   # example phone number with twilio formatting
+curl -i -X POST -d 'Body=nothing to see here&From='$FROM_PHONE_NUMBER $PREDICTION_URL
+curl -i -X POST -d 'Body=massive flooding and thunderstorms taking place&From='$FROM_PHONE_NUMBER $PREDICTION_URL
 ```
 
 ### Option C: Run model prediction locally
