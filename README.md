@@ -19,5 +19,29 @@ Prerequisites:
 
 3. Create object volume claim for each user project
 
+Set the number of users:
+```bash
+export NUM_USERS=5  # replace me
+```
+
+For each user, create a user project:
+
+```bash
+for (( i=1 ; i<=$NUM_USERS ; i++ ))
+do
+  oc new-project user$i --as=user$i \
+    --as-group=system:authenticated --as-group=system:authenticated:oauth
+done
+```
+
+For each user, create an object volume claim:
+
+```bash
+for (( i=1 ; i<=$NUM_USERS ; i++ ))
+do
+  oc create -n user$i -f ./setup/obc.yaml
+done
+```
+
 4. Upload model for each user project
 
