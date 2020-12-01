@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: workshop-objectbucket-viewers
+subjects:
+- kind: Group
+  name: workshop
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: objectbuckets.objectbucket.io-v1alpha1-view
+  apiGroup: rbac.authorization.k8s.io

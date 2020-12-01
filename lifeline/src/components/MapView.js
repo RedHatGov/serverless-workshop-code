@@ -17,23 +17,46 @@ function MapView({ stateStore }) {
         const initializeMap = ({ setMap, mapContainer }) => {
             const map = new mapboxgl.Map({
                 container: mapContainer.current,
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [stateStore.lat, stateStore.lon],
-                zoom: 10
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                center: [stateStore.lon, stateStore.lat],
+                zoom: 15
             });
 
+            map.addControl(new mapboxgl.NavigationControl());
+            var geolocate = new mapboxgl.GeolocateControl({positionOptions: {enableHighAccuracy: true},trackUserLocation: true})
+            map.addControl(geolocate);
+            geolocate.on("geolocate", function(position) {
+                console.log("A geolocate event has occurred - using those coordinates: " + position.coords.latitude + "," + position.coords.longitude)
+                stateStore.setLat(position.coords.latitude);
+                stateStore.setLon(position.coords.longitude);
+            });
             map.on("load", () => {
                 setMap(map);
                 map.resize();
+                geolocate.trigger();
             });
+
+            // this could allow us to set the location based on map center point - we'd want to place a marker 
+            // on the map to make this obvious to the user
+            // this feature will allow the user to mark a more precise location manually.
+            // map.on("move", function() {
+            //     console.log("A move event occurred " + map.getCenter());
+            //     var center = map.getCenter();
+            //     stateStore.setLat(center.lat);
+            //     stateStore.setLon(center.lng);
+            //  // TODO display animated center pin and turn off mapbox's geolocate if it's on
+            // });
         };
 
         if (!map) initializeMap({ setMap, mapContainer });
+        else map.resize();
+
+        // TODO recenter map using new coordinates
+        console.log("Mapview setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon)
     }, [map, stateStore.lat, stateStore.lon]);
 
     return (
-        <div>
-            <div ref={el => (mapContainer.current = el)} className="mapContainer"/>
+        <div ref={el => (mapContainer.current = el)} className="mapContainer">
         </div>
     );
 }

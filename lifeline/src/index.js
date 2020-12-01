@@ -8,6 +8,9 @@ import * as serviceWorker from './serviceWorker';
 import { StateStore } from "./statestore";
 const stateStore = new StateStore();
 
+console.log("node env is set to " + process.env.NODE_ENV);
+console.log("public URL is set to " + process.env.PUBLIC_URL);
+
 ReactDOM.render(
   <React.StrictMode>
     <App stateStore={stateStore}/>
