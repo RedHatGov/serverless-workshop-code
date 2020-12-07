@@ -2,6 +2,7 @@ import pickle, boto3, os
 from flask import Flask, request, abort, jsonify
 from boto3.s3.transfer import TransferConfig
 from twilio.twiml.messaging_response import MessagingResponse
+from base64 import b64encode
 
 application = Flask(__name__)
 
@@ -37,6 +38,7 @@ def predict():
         caller = caller.lstrip('+')
         if not caller.isdigit():
             abort(400)
+        caller = b64encode(caller.encode())     # base64 encode the phone number
 
         prediction = clf.predict(cv.transform([text]))[0]      # Do not use .fit_transform() here
         
@@ -44,7 +46,7 @@ def predict():
         resp = MessagingResponse()
         
         if lifeline_url:
-            resp.message("Please click on this link: {}/{}".format(lifeline_url,caller) if prediction == 1 else "Please send more information")
+            resp.message("Please click on this link: {}/{}".format(lifeline_url,caller.decode()) if prediction == 1 else "Please send more information")
         else:
             resp.message("This is a disaster!" if prediction == 1 else "No disaster")
         return str(resp)
