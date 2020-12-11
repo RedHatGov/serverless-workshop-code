@@ -5,6 +5,10 @@ For reference the workshop labs using this code [can be found here](https://gith
 
 ## Setup
 
+### Introduction to Serverless
+
+TODO
+
 ### Modernize an Application with Serverless
 
 TODO
@@ -13,11 +17,13 @@ TODO
 
 Prerequisites:
 
-1. Deploy OCS Operator
+1. Deploy CRW Operator
 
-2. Create storage cluster
+2. Deploy OCS Operator
 
-3. Create object volume claim for each user project
+3. Create storage cluster
+
+4. Create object volume claim for each user project
 
 Create a group for the workshop:
 
