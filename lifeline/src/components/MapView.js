@@ -33,7 +33,7 @@ function MapView({ stateStore }) {
             map.on("load", () => {
                 setMap(map);
                 map.resize();
-                geolocate.trigger();
+                //geolocate.trigger();
             });
 
             // this could allow us to set the location based on map center point - we'd want to place a marker 
@@ -55,7 +55,7 @@ function MapView({ stateStore }) {
 
         // TODO recenter map using new coordinates
         console.log("Mapview setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon)
-    }, [map, stateStore.lat, stateStore.lon]);
+    }, [map, stateStore, stateStore.lat, stateStore.lon]);
 
     return (
         <div ref={el => (mapContainer.current = el)} className="mapContainer">

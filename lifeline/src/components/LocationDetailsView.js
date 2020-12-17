@@ -2,22 +2,25 @@
 // license: Apache 2.0
 import React from "react";
 import { observer } from "mobx-react";
-import { postMyLocation } from "../api/emergencyapi";
+// import { postMyLocation } from "../api/emergencyapi";
 import ListGroup from "react-bootstrap/ListGroup";
 import Moment from 'react-moment';
 import 'moment-timezone';
 
 function LocationDetailsView({ stateStore }) {
-    const [mystatus, setMyStatus] = React.useState({});
-    const sendMyLocation = async (lat,lon) => {
-        const response = await postMyLocation(lat,lon);
-        setMyStatus(response.data);
-    };
+    // const sendMyLocation = async (lat,lon) => {
+    //     const response = await postMyLocation(lat,lon);
+    //     setMyStatus(response.data);
+    // };
 
     React.useEffect(() => {
-        // TODO: tell the erdemo backend and get status
-        //sendMyLocation(stateStore.lat, stateStore.lon);
-    }, [stateStore.lat, stateStore.lon, stateStore.llUpdatedAt, stateStore.address]);
+        // TODO: uncomment to automatically send location on every change
+        // if (stateStore.lat && stateStore.lon) {
+        //     sendMyLocation(stateStore.lat, stateStore.lon);
+        // } else {
+        //     console.log("LocationDetailsView - not sending updated location - no known coords")
+        // }
+    }, [stateStore.lat, stateStore.lon, stateStore.llUpdatedAt]);
 
     return (
         <div>
