@@ -40,11 +40,13 @@ function MapView({ stateStore }) {
             // on the map to make this obvious to the user
             // this feature will allow the user to mark a more precise location manually.
             // map.on("move", function() {
-            //     console.log("A move event occurred " + map.getCenter());
             //     var center = map.getCenter();
-            //     stateStore.setLat(center.lat);
-            //     stateStore.setLon(center.lng);
-            //  // TODO display animated center pin and turn off mapbox's geolocate if it's on
+            //     //if (geolocate is turned off) {
+            //         console.log("A manual move event occurred, using map center");
+            //         stateStore.setLat(center.lat);
+            //         stateStore.setLon(center.lng);
+            //         // TODO: display animated center pin and turn off mapbox's geolocate if it's on
+            //     //}
             // });
         };
 

@@ -3,8 +3,9 @@
 // inspired by work here: https://medium.com/swlh/how-to-add-geolocation-to-a-react-app-af2d55a8b5e3
 import React from "react";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
 import { Container } from '@material-ui/core';
 import { Formik } from "formik"; // forms helper
 import Form from "react-bootstrap/Form";
@@ -28,7 +29,8 @@ const buttonStyle = { marginRight: "10px" };
 
 function HomePage({ stateStore, coords }) {
     const [initialized, setInitialized] = React.useState(false);
-    
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
     const handleSubmit = async evt => {
         // manually entering an address - validate, set, share
         const isValid = await schema.validate(evt);
@@ -59,7 +61,24 @@ function HomePage({ stateStore, coords }) {
     //     }
     // };
 
+    const popupSnackbar = async () => {
+        setOpenSnackbar(true)
+    };
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackbar(false);
+    };
+
     const shareMyLocation = async () => {
+
+        // TEMP: popup an alert that says location was shared. This is for the workshop only. We decided to keep it simple
+        // by not actually doing validation
+        popupSnackbar();
+        return;
+
         const { latitude, longitude } = coords;
         if (!stateStore.incidentId) {
             console.log("no incident")
@@ -96,10 +115,10 @@ function HomePage({ stateStore, coords }) {
 
     return (
         <div className="App-homepage-form">
-
+            
             {/* TODO: error handling, popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
 
-            <h1>How can we help?</h1>
+            <h1>Do you need help?</h1>
             <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -110,9 +129,9 @@ function HomePage({ stateStore, coords }) {
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} md="12" controlId="address">
-                                <Form.Label>Verify the map is on your location, and provide form details</Form.Label>
+                                <Form.Label>Verify the map is on your location, and provide your details</Form.Label>
                                 <br/>
-                                <Form.Label>Then tap the share button</Form.Label>
+                                <Form.Label>Then scroll down and tap the share button</Form.Label>
                                 {/* <Form.Control
                                     type="text"
                                     name="address"
@@ -150,12 +169,27 @@ function HomePage({ stateStore, coords }) {
                                 <MoreInfoView stateStore={stateStore} />
                             </Tab>
                         </Tabs>
-                        <Button type="button" onClick={shareMyLocation} style={buttonStyle} disabled={!coords}>    
+                        <Button type="button" onClick={shareMyLocation} style={buttonStyle}>
                             Share My Info & Get Help
                         </Button>
                     </Form>
                 )}
             </Formik>
+
+            <Snackbar
+                anchorOrigin={{vertical: 'bottom', horizontal: 'center',}}
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                message="Your location has been shared"
+                action={
+                <React.Fragment>
+                    <Button color="secondary" size="small" onClick={handleCloseSnackbar}>OK</Button>
+                    <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseSnackbar}>
+                    </IconButton>
+                </React.Fragment>
+                }
+            />
             <br />
 
             {/* issue with these tabs + strict mode??
