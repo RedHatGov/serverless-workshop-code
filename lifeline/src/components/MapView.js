@@ -33,7 +33,7 @@ function MapView({ stateStore }) {
             map.on("load", () => {
                 setMap(map);
                 map.resize();
-                //geolocate.trigger();
+                geolocate.trigger();
             });
 
             // this could allow us to set the location based on map center point - we'd want to place a marker 
