@@ -7,7 +7,25 @@ For reference the workshop labs using this code [can be found here](https://gith
 
 ### Introduction to Serverless
 
-TODO
+#### Instructions
+
+1. Install Serverless Operator from OperatorHub
+
+2. Create the `knative-serving` namespace and apply serving
+
+```
+oc new-project knative-serving
+oc apply -f ./setup/serving.yml
+```
+
+3. Create the 'knative-eventing` namespace and apply eventing
+
+```
+oc new-project knative-eventing
+oc apply -f ./setup/serving.yml
+```
+
+4. Setup Kafka - Follow instructions from `./kafka/README.md`
 
 ### Modernize an Application with Serverless
 
