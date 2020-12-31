@@ -1,0 +1,21 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hello-python
+spec:
+  template:
+    metadata:
+      name: hello-python-v2
+    spec:
+      containers:
+        - image: quay.io/jkeam/hello-python
+          env:
+            - name: TARGET
+              value: 'World v2'
+  traffic:
+    - tag: v1
+      revisionName: hello-python-v1
+      percent: 100
+    - tag: v2
+      revisionName: hello-python-v2
+      percent: 0
