@@ -21,7 +21,7 @@ oc apply -f ./kafka-cluster.yml
 oc wait kafka/my-cluster --for=condition=Ready --timeout=300s
 ```
 
-4.  Change the default channel for the Kafka namespace
+4.  Change the default channel to use Kafka
 ```
 oc apply -f ./kafka-channel-configmap.yml
 ```

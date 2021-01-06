@@ -6,9 +6,6 @@ metadata:
 data:
   default-ch-config: |
     clusterDefault:
-      apiVersion: messaging.knative.dev/v1alpha1
-      kind: InMemoryChannel
-    namespaceDefaults:
       kafka:
         apiVersion: messaging.knative.dev/v1alpha1
         kind: KafkaChannel

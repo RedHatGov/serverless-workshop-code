@@ -1,11 +1,11 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: eventinghello-USER_NUMBER
+  name: eventinghello
 spec:
   template:
     metadata:
-      name: eventinghello-USER_NUMBER-v1
+      name: eventinghello-v1
       annotations:
         autoscaling.knative.dev/target: "1"
         autoscaling.knative.dev/maxScale: "10"

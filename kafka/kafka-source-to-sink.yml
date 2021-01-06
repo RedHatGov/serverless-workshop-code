@@ -1,13 +1,13 @@
 apiVersion: sources.knative.dev/v1alpha1
 kind: KafkaSource
 metadata:
-  name: mykafka-source-USER_NUMBER
+  name: mykafka-source
 spec:
-  consumerGroup: knative-group
+  consumerGroup: knative-group-USER_NUMBER
   bootstrapServers: my-cluster-kafka-bootstrap.kafka:9092
   topics: my-topic-USER_NUMBER
   sink:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: eventinghello-USER_NUMBER
+      name: eventinghello
