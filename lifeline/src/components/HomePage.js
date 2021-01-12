@@ -3,8 +3,9 @@
 // inspired by work here: https://medium.com/swlh/how-to-add-geolocation-to-a-react-app-af2d55a8b5e3
 import React from "react";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
 import { Container } from '@material-ui/core';
 import { Formik } from "formik"; // forms helper
 import Form from "react-bootstrap/Form";
@@ -15,20 +16,19 @@ import * as yup from "yup"; // validate schemas
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import LocationDetailsView from "./LocationDetailsView";
-import MoreInfoView from "./MoreInfoView";
-// import MapView from "./MapView";
+import MapView from "./MapView";
 // import ChatView from "./ChatView";
 import QueryString from "query-string";
 import { geolocated } from "react-geolocated";
 import { postMyLocation } from "../api/emergencyapi";
-import MapView from "./MapView";
 
 const schema = yup.object({address: yup.string().required("Address is required")});
 const buttonStyle = { marginRight: "10px" };
 
 function HomePage({ stateStore, coords }) {
     const [initialized, setInitialized] = React.useState(false);
-    
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
     const handleSubmit = async evt => {
         // manually entering an address - validate, set, share
         const isValid = await schema.validate(evt);
@@ -40,6 +40,7 @@ function HomePage({ stateStore, coords }) {
         // TODO: share
     };
 
+    // Not currently used
     // const getCurrentAddress = async () => {
     //     // Get closest address from lat/lon
     //     localStorage.clear();
@@ -59,20 +60,37 @@ function HomePage({ stateStore, coords }) {
     //     }
     // };
 
-    const shareMyLocation = async () => {
-        const { latitude, longitude } = coords;
-        if (!stateStore.incidentId) {
-            console.log("no incident")
-            // TODO: error handling, alert user to an issue - not that they can do anything about it
-        } else {
-            try {
-                const { status } = await postMyLocation(stateStore.incidentId, latitude, longitude);
-                console.log("postMyLocation get status = " + JSON.stringify(status));
-            } catch (e) {
-                console.error('postMyLocation error!');
-                // TODO: error handling, Indicate error condition to UI
-            }
+    const popupSnackbar = () => {
+        setOpenSnackbar(true)
+    };
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
         }
+
+        setOpenSnackbar(false);
+    };
+
+    const shareMyLocation = async () => {        
+        if (coords) {
+            const { latitude, longitude } = coords;
+            if (!stateStore.incidentId) {
+                console.log("no incident");
+                // TODO: error handling, alert user to an issue - not that they can do anything about it
+            } else {
+                try {
+                    const { status } = await postMyLocation(stateStore.incidentId, latitude, longitude);
+                    console.log("postMyLocation get status = " + JSON.stringify(status));
+                } catch (e) {
+                    console.error('postMyLocation error!');
+                    // TODO: error handling, Indicate error condition to UI
+                }
+            }
+        } else {
+            console.log("no coords available - need to alert user and request location");
+        }
+        // TEMP: popup an alert that says location was shared - TODO: this always shows success for the workshop
+        popupSnackbar();
     };
 
     React.useEffect(() => {
@@ -90,16 +108,16 @@ function HomePage({ stateStore, coords }) {
             const { latitude, longitude } = coords;
             stateStore.setLat(latitude);
             stateStore.setLon(longitude);
-            console.log("HomePage setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon)
+            console.log("HomePage setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon);
         }
     }, [initialized, coords, stateStore]);
 
     return (
         <div className="App-homepage-form">
-
+            
             {/* TODO: error handling, popup error if geolocation is unavailable after TIMEOUT (currently 5) seconds with instructions on how to enable in iOS/Android settings */}
 
-            <h1>How can we help?</h1>
+            <h1>Do you need help?</h1>
             <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
@@ -110,20 +128,9 @@ function HomePage({ stateStore, coords }) {
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} md="12" controlId="address">
-                                <Form.Label>Verify the map is on your location, and provide form details</Form.Label>
+                                <Form.Label>Verify the map is on your location, and provide your details</Form.Label>
                                 <br/>
-                                <Form.Label>Then tap the share button</Form.Label>
-                                {/* <Form.Control
-                                    type="text"
-                                    name="address"
-                                    placeholder="Enter an address like: 123 Millwood Lane, Raleigh NC"
-                                    value={values.address || ""}
-                                    onChange={handleChange}
-                                    isInvalid={touched.address && errors.address}
-                                    disabled = {coords}
-                                    hidden = {coords}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.address}</Form.Control.Feedback> */}
+                                <Form.Label>Then scroll down and tap the share button</Form.Label>
                             </Form.Group>
                         </Form.Row>
                         <CssBaseline />
@@ -144,18 +151,60 @@ function HomePage({ stateStore, coords }) {
                             </Tab> */}
                         </Tabs>
                         <br></br>
-                        <Tabs defaultActiveKey="moredetails">
-                            <Tab eventKey="moredetails" title="Provide Additional Info">
-                                {/* TODO: this view has forms too - they can't be nested need to fix */}
-                                <MoreInfoView stateStore={stateStore} />
-                            </Tab>
-                        </Tabs>
-                        <Button type="button" onClick={shareMyLocation} style={buttonStyle} disabled={!coords}>    
+
+                        <Form.Row>
+                            <Form.Group as={Col} md="12" controlId="fullname">
+                                <Form.Control
+                                    type="text"
+                                    name="fullname"
+                                    placeholder="Douglas Adams"
+                                    value={values.fullname || ""}
+                                    onChange={handleChange}
+                                    isInvalid={touched.fullname && errors.fullname}
+                                />
+                                <Form.Control.Feedback type="invalid">{errors.fullname}</Form.Control.Feedback>
+                                <Form.Control
+                                    type="text"
+                                    name="phone"
+                                    placeholder="555-555-5555"
+                                    value={values.phone || ""}
+                                    onChange={handleChange}
+                                    isInvalid={touched.phone && errors.phone}
+                                />
+                                <Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
+                                <Form.Control
+                                    type="text"
+                                    name="anythingelse"
+                                    placeholder="You can share any other info here"
+                                    value={values.anythingelse || ""}
+                                    onChange={handleChange}
+                                    isInvalid={touched.anythingelse && errors.anythingelse}
+                                />
+                                <Form.Control.Feedback type="invalid">{errors.anythingelse}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Form.Row>
+                        
+                        <Button type="button" onClick={shareMyLocation} style={buttonStyle}>
                             Share My Info & Get Help
                         </Button>
                     </Form>
                 )}
             </Formik>
+
+            <Snackbar
+                anchorOrigin={{vertical: 'bottom', horizontal: 'center',}}
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                message="Your location has been shared"
+                action={
+                <React.Fragment>
+                    <Button color="secondary" size="small" onClick={handleCloseSnackbar}>OK</Button>
+                    <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseSnackbar}>
+                    </IconButton>
+                </React.Fragment>
+                }
+            />
             <br />
 
             {/* issue with these tabs + strict mode??

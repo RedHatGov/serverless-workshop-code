@@ -2,7 +2,7 @@
 Show cloud events - great for testing eventing. Adding the code here so we can tweak the source if needed.
 
 ## To Use
-TBD - from source build
+`oc new-app golang~https://github.com/RedHatGov/serverless-workshop-code.git --context-dir=/cloud-event-display --name=cloud-event-display`
 
 To use from an prebuilt container image with as a KNative service just run:
 `oc apply -f ../smoketests/event-display.yaml`
