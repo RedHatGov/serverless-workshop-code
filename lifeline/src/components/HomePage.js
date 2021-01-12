@@ -60,7 +60,7 @@ function HomePage({ stateStore, coords }) {
     //     }
     // };
 
-    const popupSnackbar = async () => {
+    const popupSnackbar = () => {
         setOpenSnackbar(true)
     };
     const handleCloseSnackbar = (event, reason) => {
@@ -75,7 +75,7 @@ function HomePage({ stateStore, coords }) {
         if (coords) {
             const { latitude, longitude } = coords;
             if (!stateStore.incidentId) {
-                console.log("no incident")
+                console.log("no incident");
                 // TODO: error handling, alert user to an issue - not that they can do anything about it
             } else {
                 try {
@@ -87,7 +87,7 @@ function HomePage({ stateStore, coords }) {
                 }
             }
         } else {
-            console.log("no coords available - need to alert user and request location")
+            console.log("no coords available - need to alert user and request location");
         }
         // TEMP: popup an alert that says location was shared - TODO: this always shows success for the workshop
         popupSnackbar();
@@ -108,7 +108,7 @@ function HomePage({ stateStore, coords }) {
             const { latitude, longitude } = coords;
             stateStore.setLat(latitude);
             stateStore.setLon(longitude);
-            console.log("HomePage setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon)
+            console.log("HomePage setting coords: lat,lon = " + stateStore.lat + "," + stateStore.lon);
         }
     }, [initialized, coords, stateStore]);
 

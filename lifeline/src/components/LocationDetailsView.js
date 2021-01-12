@@ -8,6 +8,7 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 
 function LocationDetailsView({ stateStore }) {
+    // TODO: uncomment to automatically send location on every change
     // const sendMyLocation = async (lat,lon) => {
     //     const response = await postMyLocation(lat,lon);
     //     setMyStatus(response.data);
