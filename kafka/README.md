@@ -1,6 +1,6 @@
 # Kafka
 
-This section contains the necessary resources to be able to setup a Kafka Cluster and Topic.  The idea is that each participant would set up their own cluster and topic.
+This section contains the necessary resources to be able to setup a Kafka Cluster and Topic.  The idea is that each participant would use a shared cluster and set up their own topic.
 
 ## Setup
 
