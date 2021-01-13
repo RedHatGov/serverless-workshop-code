@@ -27,21 +27,7 @@ oc apply -f ./setup/serving.yml
 
 4. Setup Kafka - Follow instructions from `./kafka/README.md`
 
-### Modernize an Application with Serverless
-
-TODO
-
-### Feature Innovation with Serverless
-
-Prerequisites:
-
-1. Deploy CRW Operator
-
-2. Deploy OCS Operator
-
-3. Create storage cluster
-
-4. Create object volume claim for each user project
+5. Create Group and Users
 
 Create a group for the workshop:
 
@@ -72,7 +58,21 @@ do
 done
 ```
 
-For each user, create an object volume claim:
+### Modernize an Application with Serverless
+
+TODO
+
+### Feature Innovation with Serverless
+
+Prerequisites:
+
+1. Deploy CRW Operator
+
+2. Deploy OCS Operator
+
+3. Create storage cluster
+
+4. Create object volume claim for each user project
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -81,7 +81,7 @@ do
 done
 ```
 
-4. Upload model for each user project
+5. Upload model for each user project
 
 Set the OCS endpoint:
 
