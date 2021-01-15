@@ -22,7 +22,7 @@ oc apply -f ./setup/serving.yml
 
 ```
 oc new-project knative-eventing
-oc apply -f ./setup/serving.yml
+oc apply -f ./setup/eventing.yml
 ```
 
 4. Setup Kafka - Follow instructions from `./kafka/README.md`
