@@ -8,6 +8,8 @@ spec:
       name: eventinghello-v1
       annotations:
         autoscaling.knative.dev/target: "1"
+        autoscaling.knative.dev/maxScale: "10"
     spec:
+      containerConcurrency: 1
       containers:
       - image: quay.io/rhdevelopers/eventinghello:0.0.2
