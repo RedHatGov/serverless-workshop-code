@@ -68,11 +68,13 @@ Prerequisites:
 
 1. Deploy CRW Operator
 
-2. Deploy OCS Operator
+2. Create Che Cluster
 
-3. Create storage cluster
+3. Deploy OCS Operator
 
-4. Create object volume claim for each user project
+4. Create storage cluster
+
+5. Create object volume claim for each user project
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -81,7 +83,7 @@ do
 done
 ```
 
-5. Upload model for each user project
+6. Upload model for each user project
 
 Set the OCS endpoint:
 
