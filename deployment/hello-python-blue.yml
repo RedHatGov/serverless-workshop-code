@@ -11,7 +11,7 @@ spec:
         - image: quay.io/jkeam/hello-python
           env:
             - name: TARGET
-              value: 'World v2'
+              value: 'Python v2'
   traffic:
     - tag: v1
       revisionName: hello-python-v1
