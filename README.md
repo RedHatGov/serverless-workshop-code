@@ -5,9 +5,34 @@ For reference the workshop labs using this code [can be found here](https://gith
 
 ## Setup
 
-### Introduction to Serverless
+**Note**: You must have at least a 3-node cluster to install an OCS storage cluster.
 
-#### Instructions
+### Prerequisite
+
+Set the number of users:
+
+```bash
+export NUM_USERS=5  # replace me
+```
+
+Create a group for the workshop:
+
+```bash
+oc adm groups new workshop
+```
+
+Add each user to the workshop group and create a user project for each user:
+
+```bash
+for (( i=1 ; i<=$NUM_USERS ; i++ ))
+do
+  oc adm groups add-users workshop user$i
+  oc new-project user$i --as=user$i \
+    --as-group=system:authenticated --as-group=system:authenticated:oauth
+done
+```
+
+### Installation
 
 1. Install Serverless Operator from OperatorHub
 
@@ -27,13 +52,11 @@ oc apply -f ./setup/eventing.yml
 
 4. Setup Kafka - Follow instructions from `./kafka/README.md`
 
-5. Create Group and Users
+5. Deploy CRW Operator in the operator recommended namespace (openshift-workspaces)
 
-Create a group for the workshop:
+6. Deploy OCS Operator in the operator recommended namespace (openshift-storage)
 
-```bash
-oc adm groups new workshop
-```
+7. Create role bindings for the workshop group (this must be run *after* kafka, CRW, and OCS are installed)
 
 Create the following role bindings:
 
@@ -41,40 +64,11 @@ Create the following role bindings:
 oc create -f ./setup/rbac.yaml
 ```
 
-Set the number of users:
+8. Create CRW Che Cluster
 
-```bash
-export NUM_USERS=5  # replace me
-```
+9. Create OCS storage cluster (use 3 nodes by default)
 
-For each user, add to the workshop group and create a user project:
-
-```bash
-for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do
-  oc adm groups add-users workshop user$i
-  oc new-project user$i --as=user$i \
-    --as-group=system:authenticated --as-group=system:authenticated:oauth
-done
-```
-
-### Modernize an Application with Serverless
-
-TODO
-
-### Feature Innovation with Serverless
-
-Prerequisites:
-
-1. Deploy CRW Operator
-
-2. Create Che Cluster
-
-3. Deploy OCS Operator
-
-4. Create storage cluster
-
-5. Create object volume claim for each user project
+10. Create object volume claim for each user project
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -83,7 +77,7 @@ do
 done
 ```
 
-6. Upload model for each user project
+11. Upload model for each user project
 
 Set the OCS endpoint:
 
