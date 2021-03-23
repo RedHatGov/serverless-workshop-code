@@ -112,3 +112,43 @@ roleRef:
   kind: Role
   name: knative-serving-view
   apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: routes-view
+rules:
+- apiGroups: ["route.openshift.io"]
+  resources: ["routes"]
+  verbs: ["list", "get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: workshop-routes-viewers
+  namespace: openshift-storage
+subjects:
+- kind: Group
+  name: workshop
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: routes-view
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: workshop-routes-viewers
+  namespace: openshift-workspaces
+subjects:
+- kind: Group
+  name: workshop
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: routes-view
+  apiGroup: rbac.authorization.k8s.io
