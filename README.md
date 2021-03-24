@@ -5,31 +5,9 @@ For reference the workshop labs using this code [can be found here](https://gith
 
 ## Setup
 
-### Modernize an Application with Serverless
+**Note**: You must have at least a 3-node cluster to install an OCS storage cluster.
 
-TODO
-
-### Feature Innovation with Serverless
-
-Prerequisites:
-
-1. Deploy OCS Operator
-
-2. Create storage cluster
-
-3. Create object volume claim for each user project
-
-Create a group for the workshop:
-
-```bash
-oc adm groups new workshop
-```
-
-Create the following role bindings:
-
-```bash
-oc create -f ./setup/rbac.yaml
-```
+### Prerequisite
 
 Set the number of users:
 
@@ -37,7 +15,13 @@ Set the number of users:
 export NUM_USERS=5  # replace me
 ```
 
-For each user, add to the workshop group and create a user project:
+Create a group for the workshop:
+
+```bash
+oc adm groups new workshop
+```
+
+Add each user to the workshop group and create a user project for each user:
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -48,7 +32,43 @@ do
 done
 ```
 
-For each user, create an object volume claim:
+### Installation
+
+1. Install Serverless Operator from OperatorHub
+
+2. Create the `knative-serving` namespace and apply serving
+
+```
+oc new-project knative-serving
+oc apply -f ./setup/serving.yml
+```
+
+3. Create the 'knative-eventing` namespace and apply eventing
+
+```
+oc new-project knative-eventing
+oc apply -f ./setup/eventing.yml
+```
+
+4. Setup Kafka - Follow instructions from `./kafka/README.md`
+
+5. Deploy CRW Operator in the operator recommended namespace (openshift-workspaces)
+
+6. Deploy OCS Operator in the operator recommended namespace (openshift-storage)
+
+7. Create role bindings for the workshop group (this must be run *after* kafka, CRW, and OCS are installed)
+
+Create the following role bindings:
+
+```bash
+oc create -f ./setup/rbac.yaml
+```
+
+8. Create CRW Che Cluster
+
+9. Create OCS storage cluster (use 3 nodes by default)
+
+10. Create object volume claim for each user project
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -57,7 +77,7 @@ do
 done
 ```
 
-4. Upload model for each user project
+11. Upload model for each user project
 
 Set the OCS endpoint:
 
