@@ -2,7 +2,7 @@
 
 These are old instructions for setting this workshop up manually.
 
-**Note**: You must have at least a 3-node cluster to install an OCS storage cluster.
+**Note**: You must have at least a 3-node cluster to install an ODF storage cluster.
 
 ### Prerequisite
 
@@ -82,48 +82,48 @@ brew install awscli
 
     ```shell
     oc new-project knative-serving
-    oc apply -f ./setup/serving.yml
+    oc apply -f ./serving.yml
     ```
 
 3. Create the `knative-eventing` namespace and apply eventing
 
     ```shell
     oc new-project knative-eventing
-    oc apply -f ./setup/eventing.yml
+    oc apply -f ./eventing.yml
     ```
 
 4. Setup Kafka - Follow instructions from `./kafka/README.md`
 
 5. Deploy Dev Spaces Operator in the operator recommended namespace (openshift-operator)
 
-7. Create `openshift-devspaces` namespace `oc create namespace openshift-devspaces`
+6. Create `openshift-devspaces` namespace `oc create namespace openshift-devspaces`
 
-8. Create che cluster
+7. Create che cluster
 
     ```shell
     oc apply -f ./che-cluster.yaml
     ```
 
-9. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize adn turn green
+8. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize adn turn green
 
-10. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed). Create the following role bindings:
+9. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed). Create the following role bindings:
 
     ```shell
-    oc create -f ./setup/rbac.yaml
+    oc create -f ./rbac.yaml
     ```
 
-11. Create ODF storage cluster (use 3 nodes by default)
+10. Create ODF storage cluster (use 3 nodes by default)
 
-12. Create object volume claim for each user project
+11. Create object volume claim for each user project
 
     ```bash
     for (( i=1 ; i<=$NUM_USERS ; i++ ))
     do
-      oc create -n user$i -f ./setup/obc.yaml
+      oc create -n user$i -f ./obc.yaml
     done
     ```
 
-13. Upload model for each user project. Set the OCS endpoint:
+12. Upload model for each user project. Set the OCS endpoint:
 
     ```shell
     export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
@@ -136,6 +136,6 @@ brew install awscli
       SECRET_KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode)
       BUCKET_NAME=$(oc get cm serverless-workshop-ml -n user$i -o jsonpath="{.data.BUCKET_NAME}")
       AWS_ACCESS_KEY_ID=$KEY AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws --endpoint $ENDPOINT_URL \
-      s3 cp ./setup/model.pkl s3://$BUCKET_NAME/model.pkl
+      s3 cp ./model.pkl s3://$BUCKET_NAME/model.pkl
     done
     ```
