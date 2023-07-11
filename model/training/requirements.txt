@@ -1,3 +1,3 @@
 boto3
-sklearn
+scikit-learn
 pandas

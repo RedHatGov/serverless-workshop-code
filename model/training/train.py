@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import pickle, boto3, os
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.feature_extraction.text import CountVectorizer
+from scikit-learn.naive_bayes import MultinomialNB
+from scikit-learn.feature_extraction.text import CountVectorizer
 
 # Set variables
 bucket_name=os.getenv("BUCKET_NAME")
