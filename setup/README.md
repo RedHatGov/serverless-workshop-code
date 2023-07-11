@@ -52,6 +52,7 @@ You will need:
 ### `kn` CLI
 
 `kn` is a very powerful tool for being able to control knative from the command line. Verify that you have it installed by running:
+
 ```execute
 kn version
 ```
@@ -84,7 +85,7 @@ brew install awscli
     oc apply -f ./setup/serving.yml
     ```
 
-3. Create the 'knative-eventing` namespace and apply eventing
+3. Create the `knative-eventing` namespace and apply eventing
 
     ```shell
     oc new-project knative-eventing
@@ -102,41 +103,39 @@ brew install awscli
     ```shell
     oc apply -f ./che-cluster.yaml
     ```
+
 9. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize adn turn green
 
-10. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed)
+10. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed). Create the following role bindings:
 
-Create the following role bindings:
+    ```shell
+    oc create -f ./setup/rbac.yaml
+    ```
 
-```bash
-oc create -f ./setup/rbac.yaml
+11. Create ODF storage cluster (use 3 nodes by default)
 
-9. Create ODF storage cluster (use 3 nodes by default)
+12. Create object volume claim for each user project
 
-10. Create object volume claim for each user project
+    ```bash
+    for (( i=1 ; i<=$NUM_USERS ; i++ ))
+    do
+      oc create -n user$i -f ./setup/obc.yaml
+    done
+    ```
 
-```bash
-for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do
-  oc create -n user$i -f ./setup/obc.yaml
-done
-```
+13. Upload model for each user project. Set the OCS endpoint:
 
-11. Upload model for each user project
+    ```shell
+    export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
+    ```
 
-Set the OCS endpoint:
-
-```
-export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
-```
-
-```bash
-for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do
-  KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode)
-  SECRET_KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode)
-  BUCKET_NAME=$(oc get cm serverless-workshop-ml -n user$i -o jsonpath="{.data.BUCKET_NAME}")
-  AWS_ACCESS_KEY_ID=$KEY AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws --endpoint $ENDPOINT_URL \
-  s3 cp ./setup/model.pkl s3://$BUCKET_NAME/model.pkl
-done
-```
+    ```shell
+    for (( i=1 ; i<=$NUM_USERS ; i++ ))
+    do
+      KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode)
+      SECRET_KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode)
+      BUCKET_NAME=$(oc get cm serverless-workshop-ml -n user$i -o jsonpath="{.data.BUCKET_NAME}")
+      AWS_ACCESS_KEY_ID=$KEY AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws --endpoint $ENDPOINT_URL \
+      s3 cp ./setup/model.pkl s3://$BUCKET_NAME/model.pkl
+    done
+    ```
