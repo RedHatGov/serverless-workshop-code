@@ -2,3 +2,4 @@ gunicorn
 flask
 boto3
 twilio
+scikit-learn
