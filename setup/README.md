@@ -2,7 +2,7 @@
 
 These are old instructions for setting this workshop up manually.
 
-**Note**: You must have at least a 3-node cluster to install an OCS storage cluster.
+**Note**: You must have at least a 3-node cluster to install an ODF storage cluster.
 
 ### Prerequisite
 
@@ -46,11 +46,13 @@ You will need:
 1.  `oc`
 2.  `kn`
 3.  `stern`
+4.  `aws`
 
 
 ### `kn` CLI
 
 `kn` is a very powerful tool for being able to control knative from the command line. Verify that you have it installed by running:
+
 ```execute
 kn version
 ```
@@ -63,66 +65,77 @@ kn version
 stern -v
 ```
 
+### `aws` CLI
+
+`aws` allows you to upload the model to the s3 bucket.
+
+```execute
+# on mac
+brew install awscli
+```
+
 ### Installation
 
 1. Install Serverless Operator from OperatorHub
 
 2. Create the `knative-serving` namespace and apply serving
 
-```
-oc new-project knative-serving
-oc apply -f ./setup/serving.yml
-```
+    ```shell
+    oc new-project knative-serving
+    oc apply -f ./serving.yml
+    ```
 
-3. Create the 'knative-eventing` namespace and apply eventing
+3. Create the `knative-eventing` namespace and apply eventing
 
-```
-oc new-project knative-eventing
-oc apply -f ./setup/eventing.yml
-```
+    ```shell
+    oc new-project knative-eventing
+    oc apply -f ./eventing.yml
+    ```
 
 4. Setup Kafka - Follow instructions from `./kafka/README.md`
 
-5. Deploy CRW Operator in the operator recommended namespace (openshift-workspaces)
+5. Deploy Dev Spaces Operator in the operator recommended namespace (openshift-operator)
 
-6. Deploy OCS Operator in the operator recommended namespace (openshift-storage)
+6. Create `openshift-devspaces` namespace `oc create namespace openshift-devspaces`
 
-7. Create role bindings for the workshop group (this must be run *after* kafka, CRW, and OCS are installed)
+7. Create che cluster
 
-Create the following role bindings:
+    ```shell
+    oc apply -f ./che-cluster.yaml
+    ```
 
-```bash
-oc create -f ./setup/rbac.yaml
-```
+8. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize adn turn green
 
-8. Create CRW Che Cluster
+9. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed). Create the following role bindings:
 
-9. Create OCS storage cluster (use 3 nodes by default)
+    ```shell
+    oc create -f ./rbac.yaml
+    ```
 
-10. Create object volume claim for each user project
+10. Create ODF storage cluster (use 3 nodes by default)
 
-```bash
-for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do
-  oc create -n user$i -f ./setup/obc.yaml
-done
-```
+11. Create object volume claim for each user project
 
-11. Upload model for each user project
+    ```bash
+    for (( i=1 ; i<=$NUM_USERS ; i++ ))
+    do
+      oc create -n user$i -f ./obc.yaml
+    done
+    ```
 
-Set the OCS endpoint:
+12. Upload model for each user project. Set the OCS endpoint:
 
-```
-export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
-```
+    ```shell
+    export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
+    ```
 
-```bash
-for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do
-  KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode)
-  SECRET_KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode)
-  BUCKET_NAME=$(oc get cm serverless-workshop-ml -n user$i -o jsonpath="{.data.BUCKET_NAME}")
-  AWS_ACCESS_KEY_ID=$KEY AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws2 --endpoint $ENDPOINT_URL \
-  s3 cp ./setup/model.pkl s3://$BUCKET_NAME/model.pkl
-done
-```
+    ```shell
+    for (( i=1 ; i<=$NUM_USERS ; i++ ))
+    do
+      KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode)
+      SECRET_KEY=$(oc get secret serverless-workshop-ml -n user$i -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode)
+      BUCKET_NAME=$(oc get cm serverless-workshop-ml -n user$i -o jsonpath="{.data.BUCKET_NAME}")
+      AWS_ACCESS_KEY_ID=$KEY AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws --endpoint $ENDPOINT_URL \
+      s3 cp ./model.pkl s3://$BUCKET_NAME/model.pkl
+    done
+    ```

@@ -1,5 +1,5 @@
 gunicorn
 flask
 boto3
-sklearn
 twilio
+scikit-learn
