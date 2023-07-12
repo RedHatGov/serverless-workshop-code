@@ -12,7 +12,16 @@ projects:
 components:
   - name: python
     container:
-      image: quay.io/eclipse/che-python-3.6:nightly
+      image: registry.redhat.io/devspaces/udi-rhel8@sha256:a5a67003870daf10f941b0279a065358dd1ace6d40826462b91bae9868216eff
       memoryLimit: 512Mi
       mountSources: true
-      command: ['sleep', 'infinity']
+      sourceMapping: /serverless-workshop-code/model/prediction
+commands:
+  - id: run
+    exec:
+      commandLine: pip-3.6 install -r requirements.txt && FLASK_APP=prediction.py FLASK_ENV=development python3.6 -m flask run
+      component: python
+      group:
+        kind: run
+      label: Run the application
+      workingDir: ${PROJECTS_ROOT}
