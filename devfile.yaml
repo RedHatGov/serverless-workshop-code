@@ -1,17 +1,18 @@
----
-apiVersion: 1.0.0
+schemaVersion: 2.1.0
 metadata:
-  generateName: serverless-workshop-ml
+  name: serverless-workshop-ml
+  version: 2.1.0
+projects:
+  - name: serverless-workshop-code
+    git:
+      remotes:
+        origin: "https://github.com/RedHatGov/serverless-workshop-code.git"
+      checkoutFrom:
+        revision: workshop
 components:
- -
-  type: chePlugin
-  id: ms-python/python/latest
-  preferences:
-   python.globalModuleInstallation: true
-  memoryLimit: 512Mi
- -
-  type: dockerimage
-  alias: python
-  image: quay.io/eclipse/che-python-3.6:nightly
-  memoryLimit: 512Mi
-  mountSources: true
+  - name: python
+    container:
+      image: quay.io/eclipse/che-python-3.6:nightly
+      memoryLimit: 512Mi
+      mountSources: true
+      command: ['sleep', 'infinity']
