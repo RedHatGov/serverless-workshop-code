@@ -16,14 +16,6 @@ components:
       memoryLimit: 512Mi
       mountSources: true
 commands:
-  - id: install
-    exec:
-      commandLine: pip-3.6 install -r requirements.txt
-      component: python
-      group:
-        kind: run
-      label: Install dependencies
-      workingDir: ${PROJECTS_ROOT}/serverless-workshop-code/model/prediction
   - id: run
     exec:
       commandLine: python3.6 -m venv .venv && . .venv/bin/activate && pip install -r ./requirements.txt && FLASK_APP=prediction.py FLASK_ENV=development python3.6 -m flask run
