@@ -15,7 +15,6 @@ components:
       image: registry.redhat.io/devspaces/udi-rhel8@sha256:a5a67003870daf10f941b0279a065358dd1ace6d40826462b91bae9868216eff
       memoryLimit: 512Mi
       mountSources: true
-      sourceMapping: /model/prediction
 commands:
   - id: run
     exec:
@@ -24,4 +23,4 @@ commands:
       group:
         kind: run
       label: Run the application
-      workingDir: ${PROJECTS_ROOT}
+      workingDir: ${PROJECTS_ROOT}/model/prediction
