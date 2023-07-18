@@ -104,7 +104,7 @@ brew install awscli
     oc apply -f ./che-cluster.yaml
     ```
 
-8. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize adn turn green
+8. Deploy ODF Operator in the operator recommended namespace (openshift-storage) and create default Storage System with `Multicloud Object Gateway` type, give it like 10 min to stabilize and turn green
 
 9. Create role bindings for the workshop group (this must be run *after* AMQ Streams, Dev Spaces, and ODF are installed). Create the following role bindings:
 
