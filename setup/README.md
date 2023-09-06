@@ -112,9 +112,7 @@ brew install awscli
     oc create -f ./rbac.yaml
     ```
 
-10. Create ODF storage cluster (use 3 nodes by default)
-
-11. Create object volume claim for each user project
+10. Create object volume claim for each user project
 
     ```bash
     for (( i=1 ; i<=$NUM_USERS ; i++ ))
@@ -123,7 +121,7 @@ brew install awscli
     done
     ```
 
-12. Upload model for each user project. Set the OCS endpoint:
+11. Upload model for each user project. Set the OCS endpoint:
 
     ```shell
     export ENDPOINT_URL=$(oc get route s3 -n openshift-storage --template='https://{{.spec.host}}')
